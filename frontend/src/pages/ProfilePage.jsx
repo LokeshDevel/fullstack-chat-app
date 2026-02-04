@@ -6,18 +6,26 @@ import { Camera, Mail, User } from "lucide-react";
 const ProfilePage = () => {
   const {authUser, isUpdatingProfile, updateProfile } =useAuthStore()
   const [selectedImg, setSelectedImg] = useState(null);
-  const handleImageUpload = async(e) => {
+  const handleImageUpload = async (e) => {
+    console.log("Image aa gayiii")
     const file = e.target.files[0];
-    if(!file) return;
+    console.log("file: ", file.size)
+    const maxSizeMB = 10; //Set the img size
+    const maxSizeInBytes = maxSizeMB * 1024 * 1024 ;
 
+    if (file.size > maxSizeInBytes) {
+      toast.error("Image size too large")
+      return;
+    }
+
+    if (!file) return
     const reader = new FileReader();
-
     reader.readAsDataURL(file);
-
-    reader.onload = async () =>  {
-     const base64Image = reader.result;
-     setSelectedImg(base64Image);
-     await updateProfile({ profilePic: base64Image});
+    reader.onload = async () => {
+      const base64Image = reader.result;
+      console.log("base64Image: ", base64Image)
+      setSelectedImg(base64Image)
+      await updateProfile({ profilePic: base64Image })
     }
   }
   return (
